@@ -21,7 +21,7 @@ function create(args = []) {
   console.log("Creating the project", utils.decorate.cyan(projectName));
   fs.mkdirSync(pathName);
 
-  const templateFolder = path.resolve("../template");
+  const templateFolder = "./template";
   const packageJson = fs.readFileSync(`${templateFolder}/package.json`, { encoding: "utf8" });
   fs.writeFileSync(`${pathName}/package.json`, packageJson.replace("project_name", projectName.toLowerCase()));
 
