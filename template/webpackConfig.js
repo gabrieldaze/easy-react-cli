@@ -1,4 +1,5 @@
-const { resolve } = require("path");
+module.exports.src =
+`const { resolve } = require("path");
 
 const babelOutputPath = resolve(__dirname, "build");
 const webpackOutputPath = resolve(__dirname, "public");
@@ -10,4 +11,4 @@ module.exports = {
     filename: "main.js",
     path: webpackOutputPath
   }
-};
+};`

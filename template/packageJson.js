@@ -1,4 +1,5 @@
-{
+module.exports.src =
+`{
   "name": "project_name",
   "version": "1.0.0",
   "description": "",
@@ -12,4 +13,4 @@
   "keywords": [],
   "author": "",
   "license": "ISC"
-}
+}`

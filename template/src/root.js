@@ -1,4 +1,5 @@
-import React from 'react';
+module.exports.src =
+`import React from 'react';
 
 const RootStyle = {
   width: "100vw",
@@ -20,3 +21,4 @@ const App = () => {
 };
 
 export default App;
+`

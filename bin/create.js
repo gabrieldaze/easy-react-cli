@@ -4,6 +4,21 @@ const path = require("path");
 const childProcess = require("child_process");
 const utils = require("./utils");
 
+const templateFiles = {
+  ".babelrc": require("../template/babelrc").src,
+  "package.json": require("../template/packageJson").src,
+  "webpack.config.js": require("../template/webpackConfig").src,
+  "easy-server.js": require("../template/easy-server").src,
+  "main.js": require("../template/main").src,
+  "src/root.jsx": require("../template/src/root").src,
+  "public/index.html": require("../template/public/indexHtml").src
+}
+
+function copyTemplate(pathName) {
+  for (let key in templateFiles)
+    fs.writeFileSync(`${pathName}/${key}`, templateFiles[key], { encoding: "utf8" });
+}
+
 function create(args = []) {
   if (args.length < 3) {
     console.log(utils.decorate.red("Error"), "Missing one argument");
@@ -20,47 +35,16 @@ function create(args = []) {
 
   console.log("Creating the project", utils.decorate.cyan(projectName));
   fs.mkdirSync(pathName);
+  fs.mkdirSync(`${pathName}/src`);
+  fs.mkdirSync(`${pathName}/public`);
 
-  const templateFolder = "./template";
-  const packageJson = fs.readFileSync(`${templateFolder}/package.json`, { encoding: "utf8" });
-  fs.writeFileSync(`${pathName}/package.json`, packageJson.replace("project_name", projectName.toLowerCase()));
+  copyTemplate(pathName);
 
-  /**
-   * "@babel/cli",
-   * "@babel/core",
-   * "@babel/preset-env",
-   * "@babel/preset-react",
-   * "react",
-   * "webpack",
-   * "webpack-cli"
-   */
   console.log("Adding development dependencies.", utils.decorate.yellow("This may take a while..."));
   const slowInternet = setTimeout(() => { console.log("This process is taking a while. It may be caused by a slow internet connection.") }, 25000);
   const devDependencies = ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "webpack", "webpack-cli"]
   childProcess.execSync(`cd ${pathName} && npm install --save-dev ${devDependencies.join(" ")}`)
   clearTimeout(slowInternet);
-
-  console.log("Adding configuration files.", utils.decorate.yellow("Please, wait just a little more..."));
-
-  // Adding .babelrc
-  fs.copyFileSync(`${templateFolder}/.babelrc`, `${pathName}/.babelrc`);
-
-  // Adding webpack.config.js
-  fs.copyFileSync(`${templateFolder}/webpack.config.js`, `${pathName}/webpack.config.js`);
-
-  // Adding main.js
-  fs.copyFileSync(`${templateFolder}/main.js`, `${pathName}/main.js`);
-
-  // Adding easy-server.js
-  fs.copyFileSync(`${templateFolder}/easy-server.js`, `${pathName}/easy-server.js`);
-
-  // Adding src/index.js
-  fs.mkdirSync(`${pathName}/src`);
-  fs.copyFileSync(`${templateFolder}/src/index.jsx`, `${pathName}/src/index.jsx`);
-
-  // Adding public index.html
-  fs.mkdirSync(`${pathName}/public`);
-  fs.copyFileSync(`${templateFolder}/public/index.html`, `${pathName}/public/index.html`);
 
   console.log("Your application has been created", utils.decorate.green("successfuly"));
   console.log("Now you can run", utils.decorate.cyan("npm run start"), "inside your application folder");
