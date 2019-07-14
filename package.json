@@ -9,9 +9,6 @@
   ],
   "author": "Gabriel D. Azevedo",
   "license": "ISC",
-  "dependencies": {
-    "shelljs": "^0.8.3"
-  },
   "bin": {
     "easy-react": "bin/create.js"
   }
