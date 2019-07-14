@@ -1,1 +1,2 @@
-console.log("EasyReact CLI");
+#! /usr/bin/env node
+console.log("System args", process.argv);
