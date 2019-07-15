@@ -47,7 +47,7 @@ function create(args = []) {
 
   console.log("Adding development dependencies.", utils.decorate.yellow("This may take a while..."));
   const slowInternet = setTimeout(() => { console.log("This process is taking a while. It may be caused by a slow internet connection.") }, 25000);
-  const devDependencies = ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "webpack", "webpack-cli"]
+  const devDependencies = ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "react-dom", "webpack", "webpack-cli"]
   childProcess.execSync(`cd ${pathName} && npm install --save-dev ${devDependencies.join(" ")}`)
   clearTimeout(slowInternet);
 

@@ -1,8 +1,8 @@
 # EasyReact CLI
 
-#### EasyReact CLI is a tool for creating react applications. It uses a simple template and add the dependencies necessary to develop a react app.
+**EasyReact CLI is a tool for creating react applications. It uses a simple template and add the dependencies necessary to develop a react app.**
 
-#### It comes with a custom server, so you can develop your application and control how it is going to be served. You can obviously rewrite the development server.
+**It comes with a custom server, so you can develop your application and control how it is going to be served. You can obviously rewrite the development server.**
 
 ## Usage
 
@@ -17,7 +17,6 @@ npm run start
 
 ## Composition
 
-#### Now you'll see the template's composition
 - ***package.json***: Contains information about your project, including its dependencies
 - ***.babelrc***: Minimal configuration necessary to babeljs
 - ***webpack.config.js***: Minimal configuration necessary to webpack
