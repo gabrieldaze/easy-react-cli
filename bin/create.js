@@ -14,9 +14,14 @@ const templateFiles = {
   "public/index.html": require("../template/public/indexHtml").src
 }
 
-function copyTemplate(pathName) {
-  for (let key in templateFiles)
-    fs.writeFileSync(`${pathName}/${key}`, templateFiles[key], { encoding: "utf8" });
+function copyTemplate(projectName, pathName) {
+  for (let key in templateFiles) {
+    if (key === "package.json") {
+      fs.writeFileSync(`${pathName}/${key}`, templateFiles[key].replace("project_name", projectName.toLowerCase()), { encoding: "utf8" });
+    } else {
+      fs.writeFileSync(`${pathName}/${key}`, templateFiles[key], { encoding: "utf8" });
+    }
+  }
 }
 
 function create(args = []) {
@@ -38,7 +43,7 @@ function create(args = []) {
   fs.mkdirSync(`${pathName}/src`);
   fs.mkdirSync(`${pathName}/public`);
 
-  copyTemplate(pathName);
+  copyTemplate(projectName, pathName);
 
   console.log("Adding development dependencies.", utils.decorate.yellow("This may take a while..."));
   const slowInternet = setTimeout(() => { console.log("This process is taking a while. It may be caused by a slow internet connection.") }, 25000);
