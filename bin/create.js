@@ -4,22 +4,39 @@ const path = require("path");
 const childProcess = require("child_process");
 const utils = require("./utils");
 
-const templateFiles = {
-  ".babelrc": require("../template/babelrc").src,
-  "package.json": require("../template/packageJson").src,
-  "webpack.config.js": require("../template/webpackConfig").src,
-  "easy-server.js": require("../template/easy-server").src,
-  "main.js": require("../template/main").src,
-  "src/root.jsx": require("../template/src/root").src,
-  "public/index.html": require("../template/public/indexHtml").src
+const appType = {
+  react: {
+    devDependencies: ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "react-dom", "webpack", "webpack-cli"],
+    templateFiles: {
+      ".babelrc": require("../template/babelrc").src,
+      "package.json": require("../template/packageJson").src,
+      "webpack.config.js": require("../template/webpackConfig").src,
+      "easy-server.js": require("../template/easy-server").src,
+      "main.js": require("../template/main").src,
+      "src/root.jsx": require("../template/src/root").src,
+      "public/index.html": require("../template/public/indexHtml").src
+    }
+  },
+  electron: {
+    devDependencies: ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "react-dom", "webpack", "webpack-cli", "electron", "socket.io"],
+    templateFiles: {
+      ".babelrc": require("../template/babelrc").src,
+      "package.json": require("../template/packageElectron").src,
+      "webpack.config.js": require("../template/webpackConfig").src,
+      "easy-electron.js": require("../template/easy-electron").src,
+      "main.js": require("../template/mainElectron").src,
+      "src/root.jsx": require("../template/src/root").src,
+      "public/index.html": require("../template/public/indexHtmlElectron").src
+    }
+  }
 }
 
-function copyTemplate(projectName, pathName) {
-  for (let key in templateFiles) {
+function copyTemplate(projectName, pathName, type) {
+  for (let key in appType[type].templateFiles) {
     if (key === "package.json") {
-      fs.writeFileSync(`${pathName}/${key}`, templateFiles[key].replace("project_name", projectName.toLowerCase()), { encoding: "utf8" });
+      fs.writeFileSync(`${pathName}/${key}`, appType[type].templateFiles[key].replace("project_name", projectName.toLowerCase()), { encoding: "utf8" });
     } else {
-      fs.writeFileSync(`${pathName}/${key}`, templateFiles[key], { encoding: "utf8" });
+      fs.writeFileSync(`${pathName}/${key}`, appType[type].templateFiles[key], { encoding: "utf8" });
     }
   }
 }
@@ -30,6 +47,8 @@ function create(args = []) {
     console.log("Usage: easy-react", utils.decorate.cyan("[project name]"));
     return;
   }
+
+  const type = args[3] === "--electron" ? "electron" : "react";
 
   const projectName = args[2];
   const pathName = path.resolve(`./${projectName}`);
@@ -43,12 +62,11 @@ function create(args = []) {
   fs.mkdirSync(`${pathName}/src`);
   fs.mkdirSync(`${pathName}/public`);
 
-  copyTemplate(projectName, pathName);
+  copyTemplate(projectName, pathName, type);
 
   console.log("Adding development dependencies.", utils.decorate.yellow("This may take a while..."));
   const slowInternet = setTimeout(() => { console.log("This process is taking a while. It may be caused by a slow internet connection.") }, 25000);
-  const devDependencies = ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "react-dom", "webpack", "webpack-cli"]
-  childProcess.execSync(`cd ${pathName} && npm install --save-dev ${devDependencies.join(" ")}`)
+  childProcess.execSync(`cd ${pathName} && npm install --save-dev ${appType[type].devDependencies.join(" ")}`)
   clearTimeout(slowInternet);
 
   console.log("Your application has been created", utils.decorate.green("successfuly"));

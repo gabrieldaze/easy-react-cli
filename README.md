@@ -2,7 +2,7 @@
 
 **EasyReact CLI is a tool for creating react applications. It uses a simple template and add the dependencies necessary to develop a react app.**
 
-**It comes with a custom server, so you can develop your application and control how it is going to be served. You can obviously rewrite the development server.**
+**It comes with a custom server, so you can develop your application and change how it is going to be served, by revwriting the development server file.**
 
 ## Usage
 
@@ -10,7 +10,11 @@ To create your applications, simply run
 ```shell
 easy-react project-name
 ```
-It will create a folder containing the files you need to start to write your application. Now you can enter the folder that has just been created and run
+To create a electron application using React, you can run
+```shell
+easy-react project-name --electron
+```
+It will create a folder containing the files you need to start to write your application. Now you can enter the folder and run
 ```shell
 npm run start
 ```
@@ -22,6 +26,7 @@ npm run start
 - ***webpack.config.js***: Minimal configuration necessary to webpack
 - ***main.js***: The startpoint of your application. Contains the code needed to attach the react application to a page
 - ***easy-server.js***: The custom development server that serves the content in the **public** folder
+- ***easy-electron.js*** (For electron applications): The custom development server that serves the content in the public folder to a **electron** window.
 - ***public***: Folder containing your application. The content inside this folder is ready to deploy.
 - ***src***: Contains a file named **index.jsx** that holds the Root component for the application. That is entirely customizable.
 
