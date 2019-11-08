@@ -57,7 +57,7 @@ const initialApplication = () => {
     console.clear();
     console.log(decorate.cyan("Building application"));
     execSync("npm run build", { encoding: "utf8" });
-    console.log("Application built", decorate.green("successfuly"), "\n");
+    console.log("Application built", decorate.green("successfuly"), "\\n");
   } catch (exception) {
     console.error(decorate.red("Failed to build application"), exception);
   }
