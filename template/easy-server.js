@@ -57,34 +57,56 @@ const initialApplication = () => {
     console.clear();
     console.log(decorate.cyan("Building application"));
     execSync("npm run build", { encoding: "utf8" });
-    console.log("Application built", decorate.green("successfuly"), "\\n");
+    console.log("Application built", decorate.green("successfuly"), "\n");
   } catch (exception) {
     console.error(decorate.red("Failed to build application"), exception);
   }
 }
 
-const fileGuard = [];
+const fileList = new Set();
+let newBuildRequired = false;
 
-const rebuildApplication = (filename = "") => {
-  if (!fileGuard[filename]) {
-    fileGuard[filename] = setTimeout(() => { fileGuard[filename] = null }, 3000);
+const runBabelOnFile = (filename = "") => {
+  const lastSlash = filename.lastIndexOf("/");
+  const outputDir = lastSlash > -1 ? filename.slice(0, lastSlash) : "";
+
+  console.log("Detected changes on", decorate.cyan(filename));
+  execSync(\`npm run babel -- \${sourceFolder}/\${filename} --out-dir \${buildFolder}/src/\${outputDir}\`, { encoding: "utf8" });
+  console.log(filename, decorate.green("built successfuly"));
+
+  fileList.delete(filename);
+}
+
+const runWebpack = () => {
+  if (newBuildRequired && fileList.size === 0) {
     try {
-      const lastSlash = filename.lastIndexOf("/");
-      const outputDir = lastSlash > -1 ? filename.slice(0, lastSlash) : "";
-      console.log("Detected changes on", decorate.cyan(filename));
-      execSync(\`npm run babel -- \${sourceFolder}/\${filename} --out-dir \${buildFolder}/src/\${outputDir}\`, { encoding: "utf8" });
-      console.log(filename, decorate.green("built successfuly"));
       execSync("npm run run-webpack", { encoding: "utf8" });
       console.log("Application rebuilt", decorate.green("successfuly"), "\\n");
+
+      newBuildRequired = false;
     } catch (exception) {
-      console.error(decorate.red("Failed to rebuild application"), exception);
+      console.error(decorate.red("Failed to rebuild application."), exception);
     }
+  }
+}
+
+const rebuildApplication = (filename = "") => {
+  newBuildRequired = true;
+  fileList.add(filename);
+  try {
+    runBabelOnFile(filename);
+  } catch (exception) {
+    console.error(decorate.red("Failed to rebuild file"), filename, exception);
   }
 }
 
 const initialize = async (server = createServer()) => {
   initialApplication();
+
   server.listen(8080, () => console.log("Server now listening on port", decorate.cyan("8080"), "\\n"));
+
+  // Watching for changes
+  setInterval(() => {runWebpack()}, 500);
   watch(sourceFolder, { recursive: true }, (event, filename) => rebuildApplication(filename));
 }
 
