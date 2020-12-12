@@ -1,6 +1,6 @@
 {
   "name": "@easy-react/cli",
-  "version": "0.1.9",
+  "version": "1.0.0",
   "private": false,
   "description": "CLI tool for creating React Projects in an easy way",
   "keywords": [
