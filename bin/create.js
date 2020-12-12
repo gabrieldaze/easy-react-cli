@@ -6,35 +6,46 @@ const utils = require("./utils");
 
 const appType = {
   react: {
-    devDependencies: ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "react-dom", "webpack", "webpack-cli"],
+    dependencies: [
+      "react",
+      "react-dom",
+      "styled-components"
+    ],
+    devDependencies: [
+      "@babel/core",
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "babel-loader",
+      "ts-loader",
+      "typescript",
+      "webpack",
+      "webpack-cli",
+      "webpack-dev-server",
+    ],
     templateFiles: {
       ".babelrc": require("../template/babelrc").src,
       "package.json": require("../template/packageJson").src,
+      "tsconfig.json": require("../template/tsconfigJson").src,
       "webpack.config.js": require("../template/webpackConfig").src,
-      "easy-server.js": require("../template/easy-server").src,
-      "main.js": require("../template/main").src,
-      "src/root.jsx": require("../template/src/root").src,
-      "public/index.html": require("../template/public/indexHtml").src
+      "dist/index.html": require("../template/dist/indexHtml").src,
+      "src/index.tsx": require("../template/src/indexTsx").src,
+      "src/root.tsx": require("../template/src/rootTsx").src,
+      "src/root.styles.tsx": require("../template/src/rootStylesTsx").src,
+      "src/components/Description/description.tsx": require("../template/src/components/Description/descriptionTsx").src,
+      "src/components/Description/description.styles.tsx": require("../template/src/components/Description/descriptionStylesTsx").src,
+      "src/components/Header/header.tsx": require("../template/src/components/Header/headerTsx").src,
+      "src/components/Header/header.styles.tsx": require("../template/src/components/Header/headerStylesTsx").src,
     }
   },
-  electron: {
-    devDependencies: ["@babel/cli", "@babel/core", "@babel/preset-env", "@babel/preset-react", "react", "react-dom", "webpack", "webpack-cli", "electron", "socket.io"],
-    templateFiles: {
-      ".babelrc": require("../template/babelrc").src,
-      "package.json": require("../template/packageElectron").src,
-      "webpack.config.js": require("../template/webpackConfig").src,
-      "easy-electron.js": require("../template/easy-electron").src,
-      "main.js": require("../template/mainElectron").src,
-      "src/root.jsx": require("../template/src/root").src,
-      "public/index.html": require("../template/public/indexHtmlElectron").src
-    }
-  }
 }
 
 function copyTemplate(projectName, pathName, type) {
   for (let key in appType[type].templateFiles) {
     if (key === "package.json") {
-      fs.writeFileSync(`${pathName}/${key}`, appType[type].templateFiles[key].replace("project_name", projectName.toLowerCase()), { encoding: "utf8" });
+      fs.writeFileSync(`${pathName}/${key}`, appType[type].templateFiles[key].replace("project-name", projectName.toLowerCase()), { encoding: "utf8" });
     } else {
       fs.writeFileSync(`${pathName}/${key}`, appType[type].templateFiles[key], { encoding: "utf8" });
     }
@@ -43,34 +54,43 @@ function copyTemplate(projectName, pathName, type) {
 
 function create(args = []) {
   if (args.length < 3) {
-    console.log(utils.decorate.red("Error"), "Missing one argument");
-    console.log("Usage: easy-react", utils.decorate.cyan("[project name]"));
+    process.stderr.write(`${utils.decorate.red("Error")}: Missing one argument\n`);
+    process.stdout.write(`Usage: easy-react ${utils.decorate.cyan("[project name]")}\n`);
     return;
   }
 
-  const type = args[3] === "--electron" ? "electron" : "react";
+  // const type = args[3] === "--electron" ? "electron" : "react";
 
   const projectName = args[2];
   const pathName = path.resolve(`./${projectName}`);
   if (fs.existsSync(pathName)) {
-    console.log(utils.decorate.red("Error"), "A folder with the name of your project already exists");
+    process.stderr.write(`${utils.decorate.red("Error")}: A folder with the name ${utils.decorate.yellow(projectName)} project already exists\n`);
     return;
   }
 
-  console.log("Creating the project", utils.decorate.cyan(projectName));
+  process.stdout.write(`Creating the project ${utils.decorate.cyan(projectName)}\n`);
   fs.mkdirSync(pathName);
   fs.mkdirSync(`${pathName}/src`);
-  fs.mkdirSync(`${pathName}/public`);
+  fs.mkdirSync(`${pathName}/src/components`);
+  fs.mkdirSync(`${pathName}/src/components/Description`);
+  fs.mkdirSync(`${pathName}/src/components/Header`);
+  fs.mkdirSync(`${pathName}/src/pages`);
+  fs.mkdirSync(`${pathName}/dist`);
 
-  copyTemplate(projectName, pathName, type);
+  copyTemplate(projectName, pathName, 'react');
 
-  console.log("Adding development dependencies.", utils.decorate.yellow("This may take a while..."));
-  const slowInternet = setTimeout(() => { console.log("This process is taking a while. It may be caused by a slow internet connection.") }, 25000);
-  childProcess.execSync(`cd ${pathName} && npm install --save-dev ${appType[type].devDependencies.join(" ")}`)
-  clearTimeout(slowInternet);
+  process.stdout.write(`Adding project dependencies. ${utils.decorate.yellow("This may take a while...")}\n`);
+  const pDepsSlowInternet = setTimeout(() => { process.stdout.write("This process is taking a while. It may be caused by a slow internet connection.\n") }, 25000);
+  childProcess.execSync(`cd ${pathName} && npm install ${appType['react'].dependencies.join(" ")}`);
+  clearTimeout(pDepsSlowInternet);
 
-  console.log("Your application has been created", utils.decorate.green("successfuly"));
-  console.log("Now you can run", utils.decorate.cyan("npm run start"), "inside your application folder");
+  process.stdout.write(`Adding development dependencies. ${utils.decorate.yellow("This may take a while...")}\n`);
+  const dDepsSlowInternet = setTimeout(() => { process.stdout.write("This process is taking a while. It may be caused by a slow internet connection.\n") }, 25000);
+  childProcess.execSync(`cd ${pathName} && npm install --save-dev ${appType['react'].devDependencies.join(" ")}`)
+  clearTimeout(dDepsSlowInternet);
+
+  process.stdout.write(`Your application has been created ${utils.decorate.green("successfully")}\n`);
+  process.stdout.write(`Now you can run ${utils.decorate.cyan("npm run start")} inside your application folder\n`);
 }
 
 create(process.argv);

@@ -1,3 +1,12 @@
+# Node modules
 node_modules/
+
+# Webstorm configuration folder
+.idea/
+
+# Package manager's lock files
 package-lock.json
+yarn.lock
+
+# MACOS related file
 .DS_Store
