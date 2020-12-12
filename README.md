@@ -15,8 +15,9 @@ npm run start
 
 ## Composition
 
-- ***package.json***: Contains information about your project, including its dependencies
 - ***.babelrc***: Minimal configuration necessary to babeljs
+- ***package.json***: Contains information about your project, including its dependencies
+- ***tsconfig.json***: TypeScript language configuration file
 - ***webpack.config.js***: Minimal configuration necessary to webpack
 - ***dist/***: Folder containing your deployable application. The content inside this folder is ready to deploy.
 - ***src/***: Folder containing your source code. There is a template code using TypeScript by default, but you can simply change the files' extensions to **.jsx** or just **.js**.
@@ -26,7 +27,10 @@ npm run start
 - Removed Electron support (It will be added back later)
 - Added TypeScript by default
 - Added Styled Components by default
+- Added Webpack configuration for profiling
 
 ## Plans for the future
 
+- Add Storybook by default
+- Add Jest testing suite by default
 - Add Electron support to the CLI by using the `--electron` flag

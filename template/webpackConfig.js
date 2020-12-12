@@ -16,6 +16,13 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     cache: true,
     alias: {
+      // Webpack configuration to enable
+      // profiling with React Devtools extension
+      'react-dom$': 'react-dom/profiling',
+      'scheduler/tracing': 'scheduler/tracing-profiling',
+      
+      // Path aliases for components
+      // and pages directories
       '@components': join(PATH.source, 'components'),
       '@pages': join(PATH.source, 'pages'),
     }

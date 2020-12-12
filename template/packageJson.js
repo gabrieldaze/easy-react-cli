@@ -8,7 +8,7 @@ module.exports.src =
   "license": "MIT",
   "repository": {},
   "scripts": {
-    "serve": "webpack serve --mode=development --config=webpack.config.js",
+    "start": "webpack serve --mode=development --config=webpack.config.js",
     "build:dev": "webpack --mode=development --config=webpack.config.js",
     "build:prd": "webpack --mode=production --config=webpack.config.js"
   },
